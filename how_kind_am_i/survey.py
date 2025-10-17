@@ -76,86 +76,126 @@ class SurveyEngine:
         big_five = aggregated_scores.get("Big Five Snapshot", {})
         attachment = aggregated_scores.get("Attachment & Trust", {})
         collaboration = aggregated_scores.get("Collaboration Style", {})
+        motivation = aggregated_scores.get("Work Orientation & Craft", {})
+        safety = aggregated_scores.get("Team Psychological Safety", {})
+        mindset = aggregated_scores.get("Learning Mindset & Resilience", {})
+        influence = aggregated_scores.get("Technical Influence Exchange", {})
 
         insights: Dict[str, str] = {}
 
         def describe_liking() -> str:
             agreeableness = big_five.get("Agreeableness", 0.5)
             extraversion = big_five.get("Extraversion", 0.5)
-            neuroticism = big_five.get("Emotional Stability", 0.5)
-            if agreeableness > 0.7 and extraversion > 0.6:
+            stability = big_five.get("Emotional Stability", 0.5)
+            empathy = influence.get("Empathic Communication", 0.5)
+            if agreeableness > 0.7 and extraversion > 0.6 and empathy > 0.6:
                 return (
-                    "People are likely to perceive you as warm and approachable. "
-                    "Expect positive first impressions in casual settings."
+                    "Your blend of social ease and empathic signalling primes others to "
+                    "enjoy collaborating with you both socially and in technical spaces."
                 )
-            if neuroticism < 0.4:
+            if stability > 0.6 and empathy > 0.5:
                 return (
-                    "Your calm demeanour encourages trust even if you are more reserved."
+                    "People experience you as steady and considerate—qualities that help "
+                    "new teammates warm up even when you stay succinct."
                 )
             return (
-                "Mixed signals may arise; focus on active listening to reinforce rapport."
+                "Initial impressions may feel analytical. Share personal motivations "
+                "early on to help others map your intent."
             )
 
         def describe_technical_relationship() -> str:
             conscientiousness = big_five.get("Conscientiousness", 0.5)
             openness = big_five.get("Openness", 0.5)
-            collaboration_style = collaboration.get("Structure Preference", 0.5)
-            if conscientiousness > 0.7 and collaboration_style > 0.6:
+            mastery = motivation.get("Mastery Focus", 0.5)
+            autonomy = motivation.get("Autonomy Drive", 0.5)
+            structure = collaboration.get("Structure Preference", 0.5)
+            if mastery > 0.7 and conscientiousness > 0.7:
                 return (
-                    "As an engineer you project reliability and a preference for well-defined "
-                    "processes. Teammates will appreciate clear plans and retrospectives."
+                    "Your reputation leans toward precise, craft-focused delivery. Expect "
+                    "others to seek you out for architectural reviews and refactoring work."
                 )
-            if openness > 0.6:
+            if openness > 0.6 and autonomy > 0.6:
                 return (
-                    "You thrive in exploratory technical discussions—lean into design spikes "
-                    "and brainstorming sessions."
+                    "You shine in greenfield problem spaces—co-create lightweight "
+                    "guardrails so partners feel looped into your explorations."
+                )
+            if structure > 0.6:
+                return (
+                    "Documenting interfaces and test strategies early will showcase your "
+                    "systems thinking and make pairing smoother."
                 )
             return (
-                "Balance structure with curiosity to strengthen technical collaborations."
+                "Clarify how you balance experimentation with delivery to align "
+                "expectations on technical depth and velocity."
             )
 
         def describe_manager_relationship() -> str:
             trust = attachment.get("Trust Propensity", 0.5)
-            support = collaboration.get("Support Orientation", 0.5)
-            if trust > 0.7 and support > 0.6:
+            boundary = attachment.get("Boundary Clarity", 0.5)
+            autonomy = motivation.get("Autonomy Drive", 0.5)
+            feedback = influence.get("Feedback Exchange", 0.5)
+            if trust > 0.7 and feedback > 0.6:
                 return (
-                    "Managers are likely to see you as a dependable partner who escalates "
-                    "risks early and seeks joint solutions."
+                    "Your managers will read you as a reliable escalation partner who "
+                    "proactively surfaces trade-offs and listens to coaching."
                 )
-            if trust < 0.4:
+            if boundary < 0.4:
                 return (
-                    "Clarify expectations frequently to avoid misunderstandings with managers."
+                    "Agree on decision scopes explicitly so leaders know when to step in "
+                    "versus give you space."
+                )
+            if autonomy > 0.65:
+                return (
+                    "Share your preferred operating rhythm to reassure managers that "
+                    "autonomy will still produce visibility."
                 )
             return (
-                "Share progress rhythms and decision logs to reinforce confidence upward."
+                "Regular demo notes and retro snippets will help managers stay synced to "
+                "your impact without micromanaging."
             )
 
         def describe_peer_relationship() -> str:
             agreeableness = big_five.get("Agreeableness", 0.5)
             support = collaboration.get("Support Orientation", 0.5)
+            safety_avg = safety.get("Psychological Safety", 0.5)
+            feedback = influence.get("Feedback Exchange", 0.5)
+            if safety_avg > 0.65 and feedback > 0.6:
+                return (
+                    "You foster candid design discussions and make code reviews feel like "
+                    "shared problem solving."
+                )
             if agreeableness > 0.7 and support > 0.6:
                 return (
-                    "Peers will value pairing sessions and shared ownership with you."
+                    "Expect peers to appreciate your pairing invites and backlog gardening."
                 )
             if support < 0.4:
                 return (
-                    "Proactively offer feedback rounds to counter perceptions of distance."
+                    "Schedule routine async updates to offset any perception that you avoid "
+                    "collaborative planning."
                 )
             return (
-                "Keep communication cadences steady to deepen peer rapport."
+                "Keep signalling curiosity in peers' approaches to deepen mutual trust."
             )
 
         def describe_subordinate_relationship() -> str:
             guidance = collaboration.get("Structure Preference", 0.5)
             openness = big_five.get("Openness", 0.5)
+            mastery = motivation.get("Mastery Focus", 0.5)
+            coaching = influence.get("Mentorship Stance", 0.5)
+            if coaching > 0.65 and mastery > 0.6:
+                return (
+                    "Mentees will see you as an invested coach who pairs growth plans with "
+                    "clear quality bars."
+                )
             if guidance > 0.7 and openness > 0.5:
                 return (
-                    "Direct reports will benefit from your organised onboarding and "
-                    "willingness to adapt to their learning styles."
+                    "Structured onboarding plus openness to new tooling keeps your reports "
+                    "learning without feeling boxed in."
                 )
             if guidance < 0.4:
                 return (
-                    "Define check-ins and role clarity to avoid ambiguity with mentees."
+                    "Co-create working agreements to ensure junior engineers know how to "
+                    "ask for feedback."
                 )
             return (
                 "Blend documented guidance with exploratory growth conversations."
@@ -164,18 +204,44 @@ class SurveyEngine:
         def describe_chatroom_relationship() -> str:
             extraversion = big_five.get("Extraversion", 0.5)
             openness = big_five.get("Openness", 0.5)
-            trust = attachment.get("Trust Propensity", 0.5)
-            if extraversion > 0.6 and openness > 0.6:
+            resilience = mindset.get("Challenge Resilience", 0.5)
+            learning = mindset.get("Learning Agility", 0.5)
+            if extraversion > 0.6 and learning > 0.6:
                 return (
-                    "In study groups you naturally catalyse discussion and share resources."
+                    "You animate study chats with live demos and curated references, keeping "
+                    "threads vibrant."
                 )
-            if trust < 0.4:
+            if resilience > 0.65:
                 return (
-                    "Start with asynchronous contributions to build familiarity before "
-                    "facilitating live sessions."
+                    "Sharing how you iterate through bugs encourages others to open up about "
+                    "their stuck points."
                 )
             return (
-                "Consistent summaries and question prompts will keep chatrooms engaged."
+                "Post recap notes and invite lightning talks to sustain momentum online."
+            )
+
+        def describe_code_review() -> str:
+            conscientiousness = big_five.get("Conscientiousness", 0.5)
+            safety_avg = safety.get("Psychological Safety", 0.5)
+            feedback = influence.get("Feedback Exchange", 0.5)
+            mastery = motivation.get("Mastery Focus", 0.5)
+            if mastery > 0.7 and feedback > 0.6:
+                return (
+                    "Review feedback will read as craft-enriching and actionable—expect "
+                    "teammates to request your sign-off."
+                )
+            if safety_avg < 0.45:
+                return (
+                    "Signal positive intent and ask clarifying questions before offering "
+                    "refactors to keep reviews collaborative."
+                )
+            if conscientiousness > 0.65:
+                return (
+                    "Your detail orientation keeps regressions out; summarise priorities so "
+                    "authors know what to tackle first."
+                )
+            return (
+                "Offer context on architectural goals to ensure review comments land well."
             )
 
         insights["General Liking"] = describe_liking()
@@ -184,6 +250,7 @@ class SurveyEngine:
         insights["Peer Relationship"] = describe_peer_relationship()
         insights["Mentor/Lead Relationship"] = describe_subordinate_relationship()
         insights["Learning Community"] = describe_chatroom_relationship()
+        insights["Code Review Dynamics"] = describe_code_review()
 
         return insights
 
@@ -192,34 +259,80 @@ def default_models() -> Tuple[SurveyModel, ...]:
     """Factory for the default survey models used by the CLI."""
     big_five_questions = [
         LikertScaleQuestion(
-            "I make friends easily.", "Extraversion"
+            "I make friends easily during new project kickoffs.", "Extraversion"
         ),
         LikertScaleQuestion(
-            "I feel little concern for others.", "Agreeableness", reverse_scored=True
+            "I feel little concern for how teammates are doing.",
+            "Agreeableness",
+            reverse_scored=True,
         ),
         LikertScaleQuestion(
-            "I am always prepared.", "Conscientiousness"
+            "I am always prepared for stand-ups or design reviews.", "Conscientiousness"
         ),
         LikertScaleQuestion(
-            "I get stressed out easily.", "Emotional Stability", reverse_scored=True
+            "I get stressed out easily when production issues arise.",
+            "Emotional Stability",
+            reverse_scored=True,
         ),
         LikertScaleQuestion(
-            "I have a rich vocabulary.", "Openness"
+            "I enjoy exploring new programming paradigms.", "Openness"
         ),
         LikertScaleQuestion(
-            "I don't talk a lot.", "Extraversion", reverse_scored=True
+            "I prefer that others start conversations first.",
+            "Extraversion",
+            reverse_scored=True,
         ),
         LikertScaleQuestion(
-            "I sympathise with others' feelings.", "Agreeableness"
+            "I quickly notice when teammates need help.", "Agreeableness"
         ),
         LikertScaleQuestion(
-            "I leave my belongings around.", "Conscientiousness", reverse_scored=True
+            "I leave my working notes scattered across tools.",
+            "Conscientiousness",
+            reverse_scored=True,
         ),
         LikertScaleQuestion(
-            "I change my mood a lot.", "Emotional Stability", reverse_scored=True
+            "I adapt well when sprint plans change unexpectedly.", "Emotional Stability"
         ),
         LikertScaleQuestion(
-            "I am quick to understand things.", "Openness"
+            "I like experimenting with unfamiliar frameworks.", "Openness"
+        ),
+        LikertScaleQuestion(
+            "I energise teams during pairing sessions.", "Extraversion"
+        ),
+        LikertScaleQuestion(
+            "I can be detached from teammates' feelings.",
+            "Agreeableness",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "I maintain tidy documentation and repositories.", "Conscientiousness"
+        ),
+        LikertScaleQuestion(
+            "I stay calm while debugging under pressure.", "Emotional Stability"
+        ),
+        LikertScaleQuestion(
+            "I look for patterns that connect different tech stacks.", "Openness"
+        ),
+        LikertScaleQuestion(
+            "I avoid casual chats with new colleagues.",
+            "Extraversion",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "I empathise with users when evaluating trade-offs.", "Agreeableness"
+        ),
+        LikertScaleQuestion(
+            "I postpone writing tests until the end.",
+            "Conscientiousness",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "My mood swings make it hard to stay focused.",
+            "Emotional Stability",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "I love reading papers or RFCs about emerging tools.", "Openness"
         ),
     ]
 
@@ -249,7 +362,129 @@ def default_models() -> Tuple[SurveyModel, ...]:
             "I proactively check in on teammates' progress.", "Support Orientation"
         ),
         LikertScaleQuestion(
-            "I am comfortable when requirements remain flexible.", "Structure Preference", reverse_scored=True
+            "I am comfortable when requirements remain flexible.",
+            "Structure Preference",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "I host working sessions to unblock cross-functional partners.",
+            "Support Orientation",
+        ),
+        LikertScaleQuestion(
+            "I create templates or runbooks to share team knowledge.",
+            "Structure Preference",
+        ),
+    ]
+
+    work_orientation_questions = [
+        LikertScaleQuestion(
+            "I push for autonomy in how I implement solutions.", "Autonomy Drive"
+        ),
+        LikertScaleQuestion(
+            "I am motivated by becoming a deeper craft expert.", "Mastery Focus"
+        ),
+        LikertScaleQuestion(
+            "I connect our product work to an end-user mission.", "Purpose Alignment"
+        ),
+        LikertScaleQuestion(
+            "I prefer others to define the approach in detail.",
+            "Autonomy Drive",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "I invest in deliberate practice (katas, labs, spikes).",
+            "Mastery Focus",
+        ),
+        LikertScaleQuestion(
+            "I see how our team's impact ladders into company goals.",
+            "Purpose Alignment",
+        ),
+    ]
+
+    psychological_safety_questions = [
+        LikertScaleQuestion(
+            "Members of this team are able to bring up tough technical issues.",
+            "Psychological Safety",
+        ),
+        LikertScaleQuestion(
+            "When someone makes a mistake on this team, it is often held against them.",
+            "Psychological Safety",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "People on this team accept others being different.", "Psychological Safety"
+        ),
+        LikertScaleQuestion(
+            "It is safe to take a risk on this team.", "Psychological Safety"
+        ),
+        LikertScaleQuestion(
+            "It is difficult to ask other members for help.",
+            "Psychological Safety",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "No one on this team deliberately acts to undermine others.",
+            "Psychological Safety",
+        ),
+        LikertScaleQuestion(
+            "Working with this team, my unique skills are valued.",
+            "Psychological Safety",
+        ),
+    ]
+
+    learning_mindset_questions = [
+        LikertScaleQuestion(
+            "I see challenging bugs as opportunities to expand my skills.",
+            "Learning Agility",
+        ),
+        LikertScaleQuestion(
+            "I avoid tasks that might expose gaps in my knowledge.",
+            "Learning Agility",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "Feedback on my code helps me grow even if it stings at first.",
+            "Challenge Resilience",
+        ),
+        LikertScaleQuestion(
+            "I believe my core technical talent is fixed.",
+            "Challenge Resilience",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "I keep a backlog of experiments or prototypes I want to run.",
+            "Learning Agility",
+        ),
+        LikertScaleQuestion(
+            "I bounce back quickly after an incident postmortem.",
+            "Challenge Resilience",
+        ),
+    ]
+
+    influence_exchange_questions = [
+        LikertScaleQuestion(
+            "I tailor technical explanations to the audience's context.",
+            "Empathic Communication",
+        ),
+        LikertScaleQuestion(
+            "I invite feedback on decisions that affect other teams.",
+            "Feedback Exchange",
+        ),
+        LikertScaleQuestion(
+            "I mentor others through architectural reasoning.", "Mentorship Stance"
+        ),
+        LikertScaleQuestion(
+            "I often push my preferred solution without alignment.",
+            "Empathic Communication",
+            reverse_scored=True,
+        ),
+        LikertScaleQuestion(
+            "I share context when I request changes in code reviews.",
+            "Feedback Exchange",
+        ),
+        LikertScaleQuestion(
+            "I help teammates connect their growth plans to project work.",
+            "Mentorship Stance",
         ),
     ]
 
@@ -280,5 +515,37 @@ def default_models() -> Tuple[SurveyModel, ...]:
                 "checks, focusing on support behaviours and structure preferences."
             ),
             questions=collaboration_questions,
+        ),
+        SurveyModel(
+            name="Work Orientation & Craft",
+            description=(
+                "A triad based on self-determination theory emphasising autonomy, "
+                "mastery, and purpose alignment within engineering careers."
+            ),
+            questions=work_orientation_questions,
+        ),
+        SurveyModel(
+            name="Team Psychological Safety",
+            description=(
+                "Items from Amy Edmondson's psychological safety construct adapted "
+                "for engineering squads and incident response teams."
+            ),
+            questions=psychological_safety_questions,
+        ),
+        SurveyModel(
+            name="Learning Mindset & Resilience",
+            description=(
+                "Statements inspired by Carol Dweck's growth mindset research and "
+                "resilience scales tailored to continuous learning in tech."
+            ),
+            questions=learning_mindset_questions,
+        ),
+        SurveyModel(
+            name="Technical Influence Exchange",
+            description=(
+                "A composite drawing from leader-member exchange (LMX) and technical "
+                "mentorship literature on how engineers circulate influence."
+            ),
+            questions=influence_exchange_questions,
         ),
     )
