@@ -100,8 +100,8 @@ def run_cli(args: argparse.Namespace) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Run a CLI survey grounded in validated social psychology models to "
-            "understand interpersonal dynamics."
+            "Run a CLI survey grounded in validated social and organisational "
+            "psychology models tailored for software engineers."
         )
     )
     subparsers = parser.add_subparsers(dest="command", required=True)

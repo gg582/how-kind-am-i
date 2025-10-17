@@ -1,18 +1,28 @@
 # How Kind Am I
 
-A small CLI survey tool that combines well-known social psychology frameworks to
-explore how another person might perceive working and personal relationships.
-The inventory uses:
+A small CLI survey tool that combines well-known social and organisational
+psychology frameworks to explore how collaborators might perceive working with a
+software engineer. The inventory now layers multiple validated constructs with a
+focus on engineering practice:
 
-- A short **Big Five** snapshot to approximate traits that affect first
-  impressions.
+- A 20-item **Big Five Snapshot** tuned to engineering rituals (stand-ups,
+  incidents, experimentation) to approximate first impressions.
 - An **Attachment & Trust** pulse based on adult attachment questionnaires to
   understand how you approach support and boundaries.
-- A **Collaboration Style** check adapted from agile team health surveys to
-  reflect how you coordinate and guide others.
+- A richer **Collaboration Style** check adapted from agile team health surveys
+  that probes facilitation, structure, and enablement habits.
+- A **Work Orientation & Craft** triad inspired by self-determination theory to
+  capture autonomy, mastery, and purpose drivers common to engineering careers.
+- A **Team Psychological Safety** scale drawn from Amy Edmondson's validated
+  items and rewritten for software squads.
+- A **Learning Mindset & Resilience** set informed by Carol Dweck's growth
+  mindset research to understand how you metabolise feedback and incidents.
+- A **Technical Influence Exchange** composite grounded in leader–member
+  exchange and mentorship literature to illuminate feedback and coaching flows.
 
-The tool aggregates your responses and offers narrative insights for different
-contexts (manager, peer, mentee, study group, etc.).
+The tool aggregates your responses and offers narrative insights for contexts
+such as manager alignment, peer collaboration, mentorship, code review dynamics,
+and online learning communities.
 
 ## Requirements
 
